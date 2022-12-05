@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const dbConnect = require("./config/db/dbConnect");
 const usersRoute = require("./route/users/usersRoute");
+const { errorHandler } = require("./middlewares/error/errorHandler");
 dotenv.config();
 
 const app = express();
@@ -13,6 +14,9 @@ app.use(express.json());
 
 //Users Route
 app.use("/api/users", usersRoute);
+
+//err handler
+app.use(errorHandler);
 
 //server
 const PORT = process.env.PORT || 5000;
