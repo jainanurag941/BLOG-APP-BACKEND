@@ -3,7 +3,6 @@ const User = require("../../model/user/User");
 const generateToken = require("../../config/token/generateToken");
 
 //Register User
-
 const userRegisterCtrl = expressAsyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email: req?.body?.email });
   if (userExists) throw new Error("User already exists");
@@ -21,12 +20,14 @@ const userRegisterCtrl = expressAsyncHandler(async (req, res) => {
   }
 });
 
+//Login User
 const userLoginCtrl = expressAsyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const userFound = await User.findOne({ email });
 
   if (userFound && (await userFound.isPasswordMatched(password))) {
     res.json({
+      _id: userFound._id,
       firstName: userFound?.firstName,
       lastName: userFound?.lastName,
       email: userFound?.email,
@@ -40,4 +41,14 @@ const userLoginCtrl = expressAsyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { userRegisterCtrl, userLoginCtrl };
+//Fetch All Users
+const fetchUsersCtrl = expressAsyncHandler(async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.json(users);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+module.exports = { userRegisterCtrl, userLoginCtrl, fetchUsersCtrl };
