@@ -95,6 +95,27 @@ const userProfileCtrl = expressAsyncHandler(async (req, res) => {
   }
 });
 
+//Update profile
+const updateUserCtrl = expressAsyncHandler(async (req, res) => {
+  const { _id } = req?.user;
+  validateMongodbId(_id);
+
+  const user = await User.findByIdAndUpdate(
+    _id,
+    {
+      firstName: req?.body?.firstName,
+      lastName: req?.body?.lastName,
+      email: req?.body?.email,
+      bio: req?.body?.bio,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  res.json(user);
+});
+
 module.exports = {
   userRegisterCtrl,
   userLoginCtrl,
@@ -102,4 +123,5 @@ module.exports = {
   deleteUsersCtrl,
   fetchUserDetailsCtrl,
   userProfileCtrl,
+  updateUserCtrl,
 };
