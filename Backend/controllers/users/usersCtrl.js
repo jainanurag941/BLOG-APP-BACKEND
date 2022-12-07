@@ -2,6 +2,7 @@ const expressAsyncHandler = require("express-async-handler");
 const User = require("../../model/user/User");
 const generateToken = require("../../config/token/generateToken");
 const validateMongodbId = require("../../utils/validateMongodbID");
+const nodemailer = require("nodemailer");
 
 //Register User
 const userRegisterCtrl = expressAsyncHandler(async (req, res) => {
@@ -230,6 +231,32 @@ const unBlockUserCtrl = expressAsyncHandler(async (req, res) => {
   res.json(user);
 });
 
+//Account Verification - Send Mail
+const generateVerificationTokenCtrl = expressAsyncHandler(async (req, res) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "hotmail",
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASS,
+      },
+    });
+
+    const msg = {
+      from: process.env.EMAIL,
+      to: "",
+      subject: "Verification Mail",
+      text: "This is a verification message",
+    };
+
+    await transporter.sendMail(msg);
+
+    res.json("Email sent");
+  } catch (error) {
+    res.json(error);
+  }
+});
+
 module.exports = {
   userRegisterCtrl,
   userLoginCtrl,
@@ -243,4 +270,5 @@ module.exports = {
   unfollowUserCtrl,
   blockUserCtrl,
   unBlockUserCtrl,
+  generateVerificationTokenCtrl,
 };
