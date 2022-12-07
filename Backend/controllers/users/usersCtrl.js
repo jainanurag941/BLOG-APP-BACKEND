@@ -3,6 +3,7 @@ const User = require("../../model/user/User");
 const generateToken = require("../../config/token/generateToken");
 const validateMongodbId = require("../../utils/validateMongodbID");
 const nodemailer = require("nodemailer");
+const crypto = require("crypto");
 
 //Register User
 const userRegisterCtrl = expressAsyncHandler(async (req, res) => {
@@ -231,9 +232,18 @@ const unBlockUserCtrl = expressAsyncHandler(async (req, res) => {
   res.json(user);
 });
 
-//Account Verification - Send Mail
+//Generate Email verification token
 const generateVerificationTokenCtrl = expressAsyncHandler(async (req, res) => {
+  const loginUserId = req.user.id;
+
+  const user = await User.findById(loginUserId);
   try {
+    //Generate Token
+    const verificationToken = await user.createAccountVerificationToken();
+    await user.save();
+
+    const resetURL = `If you were requested to verify your account, verify now within 10 miniutes, otherwise ignore this message <a href="http://localhost:3000/verify-account/${verificationToken}">Click to verify your account</a>`;
+
     const transporter = nodemailer.createTransport({
       service: "hotmail",
       auth: {
@@ -244,17 +254,39 @@ const generateVerificationTokenCtrl = expressAsyncHandler(async (req, res) => {
 
     const msg = {
       from: process.env.EMAIL,
-      to: "",
+      to: "abc@gmail.com",
       subject: "Verification Mail",
-      text: "This is a verification message",
+      html: resetURL,
     };
 
     await transporter.sendMail(msg);
 
-    res.json("Email sent");
+    res.json(resetURL);
   } catch (error) {
     res.json(error);
   }
+});
+
+//Account verification
+const accountVerificationCtrl = expressAsyncHandler(async (req, res) => {
+  const { token } = req.body;
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const userFound = await User.findOne({
+    accountVerificationToken: hashedToken,
+    accountVerificationTokenExpires: { $gt: new Date() },
+  });
+
+  if (!userFound) {
+    throw new Error("Token Expired, try again later");
+  }
+
+  userFound.isAccountVerified = true;
+  userFound.accountVerificationToken = undefined;
+  userFound.accountVerificationTokenExpires = undefined;
+  await userFound.save();
+
+  res.json(userFound);
 });
 
 module.exports = {
@@ -271,4 +303,5 @@ module.exports = {
   blockUserCtrl,
   unBlockUserCtrl,
   generateVerificationTokenCtrl,
+  accountVerificationCtrl,
 };
