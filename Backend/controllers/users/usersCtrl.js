@@ -289,6 +289,67 @@ const accountVerificationCtrl = expressAsyncHandler(async (req, res) => {
   res.json(userFound);
 });
 
+//Forget Password Token Generator
+const forgetPasswordToken = expressAsyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  try {
+    const token = await user.createPasswordResetToken();
+    await user.save();
+
+    const resetURL = `If you were requested to reset your password, reset now within 10 miniutes, otherwise ignore this message <a href="http://localhost:3000/reset-password/${token}">Click to reset your password</a>`;
+
+    const transporter = nodemailer.createTransport({
+      service: "hotmail",
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASS,
+      },
+    });
+
+    const msg = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Reset Password Mail",
+      html: resetURL,
+    };
+
+    await transporter.sendMail(msg);
+
+    res.json({
+      msg: `A verification message is successfully sent to ${email}. Reset now within 10 minutes, ${resetURL}`,
+    });
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+//Password Reset
+const passwordResetCtrl = expressAsyncHandler(async (req, res) => {
+  const { token, password } = req.body;
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    throw new Error("Token Expired, try again later");
+  }
+
+  user.password = password;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+  res.json(user);
+});
+
 module.exports = {
   userRegisterCtrl,
   userLoginCtrl,
@@ -304,4 +365,6 @@ module.exports = {
   unBlockUserCtrl,
   generateVerificationTokenCtrl,
   accountVerificationCtrl,
+  forgetPasswordToken,
+  passwordResetCtrl,
 };
