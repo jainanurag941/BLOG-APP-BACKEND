@@ -6,6 +6,7 @@ const Filter = require("bad-words");
 const fs = require("fs");
 const cloudinaryUploadImg = require("../../utils/cloudinary");
 
+//Create Post
 const createPostCtrl = expressAsyncHandler(async (req, res) => {
   const { _id } = req.user;
   validateMongodbId(req.body.user);
@@ -43,4 +44,14 @@ const createPostCtrl = expressAsyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { createPostCtrl };
+//Fetch all posts
+const fetchPostsCtrl = expressAsyncHandler(async (req, res) => {
+  try {
+    const posts = await Post.find({}).populate("user");
+    res.json(posts);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+module.exports = { createPostCtrl, fetchPostsCtrl };
