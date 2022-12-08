@@ -350,6 +350,12 @@ const passwordResetCtrl = expressAsyncHandler(async (req, res) => {
   res.json(user);
 });
 
+//Profile photo upload
+const profilePhotoUploadCtrl = expressAsyncHandler(async (req, res) => {
+  console.log(req.file);
+  res.json("upload");
+});
+
 module.exports = {
   userRegisterCtrl,
   userLoginCtrl,
@@ -367,4 +373,5 @@ module.exports = {
   accountVerificationCtrl,
   forgetPasswordToken,
   passwordResetCtrl,
+  profilePhotoUploadCtrl,
 };
