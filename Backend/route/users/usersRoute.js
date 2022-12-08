@@ -1,6 +1,7 @@
 const express = require("express");
 const {
   profilePhotoUpload,
+  profilePhotoResize,
 } = require("../../middlewares/uploads/profilePhotoUpload");
 const {
   userRegisterCtrl,
@@ -30,6 +31,7 @@ userRoutes.put(
   "/profilephoto-upload",
   authMiddleware,
   profilePhotoUpload.single("image"),
+  profilePhotoResize,
   profilePhotoUploadCtrl
 );
 userRoutes.get("/", authMiddleware, fetchUsersCtrl);
