@@ -5,6 +5,7 @@ const validateMongodbId = require("../../utils/validateMongodbID");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const cloudinaryUploadImg = require("../../utils/cloudinary");
+const fs = require("fs");
 
 //Register User
 const userRegisterCtrl = expressAsyncHandler(async (req, res) => {
@@ -371,6 +372,8 @@ const profilePhotoUploadCtrl = expressAsyncHandler(async (req, res) => {
     }
   );
 
+  //Remove uploaded images
+  fs.unlinkSync(localPath);
   res.json(foundUser);
 });
 

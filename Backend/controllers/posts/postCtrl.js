@@ -3,6 +3,7 @@ const User = require("../../model/user/User");
 const expressAsyncHandler = require("express-async-handler");
 const validateMongodbId = require("../../utils/validateMongodbID");
 const Filter = require("bad-words");
+const fs = require("fs");
 const cloudinaryUploadImg = require("../../utils/cloudinary");
 
 const createPostCtrl = expressAsyncHandler(async (req, res) => {
@@ -34,6 +35,9 @@ const createPostCtrl = expressAsyncHandler(async (req, res) => {
       user: _id,
     });
     res.json(post);
+
+    //Remove uploaded images
+    fs.unlinkSync(localPath);
   } catch (error) {
     res.json(error);
   }
