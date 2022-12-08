@@ -3,6 +3,7 @@ const User = require("../../model/user/User");
 const expressAsyncHandler = require("express-async-handler");
 const validateMongodbId = require("../../utils/validateMongodbID");
 const Filter = require("bad-words");
+const cloudinaryUploadImg = require("../../utils/cloudinary");
 
 const createPostCtrl = expressAsyncHandler(async (req, res) => {
   const { _id } = req.user;
@@ -19,8 +20,19 @@ const createPostCtrl = expressAsyncHandler(async (req, res) => {
       "Creating Failed because it contains profane words and you have been blocked"
     );
   }
+
+  //1. Get the path to img
+  const localPath = `public/images/posts/${req.file.filename}`;
+
+  //2. Upload to cloudinary
+  const imgUploaded = await cloudinaryUploadImg(localPath);
+
   try {
-    const post = await Post.create(req.body);
+    const post = await Post.create({
+      ...req.body,
+      image: imgUploaded?.url,
+      user: _id,
+    });
     res.json(post);
   } catch (error) {
     res.json(error);

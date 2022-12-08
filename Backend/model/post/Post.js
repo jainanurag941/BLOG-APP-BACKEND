@@ -22,7 +22,7 @@ const postSchema = new mongoose.Schema(
     },
     numViews: {
       type: Number,
-      dafault: 0,
+      default: 0,
     },
     likes: [
       {

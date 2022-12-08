@@ -1,8 +1,8 @@
 const express = require("express");
 const {
-  profilePhotoUpload,
+  photoUpload,
   profilePhotoResize,
-} = require("../../middlewares/uploads/profilePhotoUpload");
+} = require("../../middlewares/uploads/photoUpload");
 const {
   userRegisterCtrl,
   userLoginCtrl,
@@ -30,7 +30,7 @@ userRoutes.post("/login", userLoginCtrl);
 userRoutes.put(
   "/profilephoto-upload",
   authMiddleware,
-  profilePhotoUpload.single("image"),
+  photoUpload.single("image"),
   profilePhotoResize,
   profilePhotoUploadCtrl
 );
