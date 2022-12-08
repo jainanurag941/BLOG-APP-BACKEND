@@ -3,6 +3,7 @@ const postRoute = express.Router();
 const {
   createPostCtrl,
   fetchPostsCtrl,
+  fetchPostCtrl,
 } = require("../../controllers/posts/postCtrl");
 const authMiddleware = require("../../middlewares/auth/authMiddleware");
 const {
@@ -18,5 +19,6 @@ postRoute.post(
   createPostCtrl
 );
 postRoute.get("/", fetchPostsCtrl);
+postRoute.get("/:id", fetchPostCtrl);
 
 module.exports = postRoute;
