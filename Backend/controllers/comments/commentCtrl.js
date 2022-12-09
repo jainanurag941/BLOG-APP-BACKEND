@@ -39,4 +39,32 @@ const fetchCommentCtrl = expressAsyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { createCommentCtrl, fetchAllCommentsCtrl, fetchCommentCtrl };
+//Update
+const updateCommentCtrl = expressAsyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { postId, description } = req?.body;
+  try {
+    const update = await Comment.findByIdAndUpdate(
+      id,
+      {
+        post: postId,
+        user: req.user,
+        description,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    res.json(update);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+module.exports = {
+  createCommentCtrl,
+  fetchAllCommentsCtrl,
+  fetchCommentCtrl,
+  updateCommentCtrl,
+};
