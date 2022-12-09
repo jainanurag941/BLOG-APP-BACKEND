@@ -163,7 +163,7 @@ const toggleAddLikeToPostCtrl = expressAsyncHandler(async (req, res) => {
   res.json(post);
 });
 
-//Likes
+//DisLikes
 const toggleAddDisLikeToPostCtrl = expressAsyncHandler(async (req, res) => {
   //1. Find the post to be liked
   const { postId } = req.body;
