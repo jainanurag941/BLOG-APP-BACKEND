@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const dbConnect = require("./config/db/dbConnect");
 const usersRoute = require("./route/users/usersRoute");
 const postRoute = require("./route/posts/postRoute");
+const commentRoute = require("./route/comments/commentRoute");
 const { errorHandler, notFound } = require("./middlewares/error/errorHandler");
 dotenv.config();
 
@@ -18,6 +19,9 @@ app.use("/api/users", usersRoute);
 
 //Post Route
 app.use("/api/posts", postRoute);
+
+//Comment Route
+app.use("/api/comments", commentRoute);
 
 //err handler
 app.use(notFound);
