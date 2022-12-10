@@ -5,6 +5,7 @@ const usersRoute = require("./route/users/usersRoute");
 const postRoute = require("./route/posts/postRoute");
 const commentRoute = require("./route/comments/commentRoute");
 const emailMsgRoute = require("./route/emailMsg/emailMsgRoute");
+const categoryRoute = require("./route/category/categoryRoute");
 const { errorHandler, notFound } = require("./middlewares/error/errorHandler");
 dotenv.config();
 
@@ -26,6 +27,9 @@ app.use("/api/comments", commentRoute);
 
 //Email Msg Route
 app.use("/api/email", emailMsgRoute);
+
+//Category Route
+app.use("/api/category", categoryRoute);
 
 //err handler
 app.use(notFound);
