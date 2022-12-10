@@ -2,6 +2,7 @@ const expressAsyncHandler = require("express-async-handler");
 const validateMongodbId = require("../../utils/validateMongodbID");
 const Category = require("../../model/Category/Category");
 
+//create
 const createCategoryCtrl = expressAsyncHandler(async (req, res) => {
   try {
     const category = await Category.create({
@@ -15,4 +16,17 @@ const createCategoryCtrl = expressAsyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { createCategoryCtrl };
+//fetch all categories
+const fetchCategoriesCtrl = expressAsyncHandler(async (req, res) => {
+  try {
+    const categories = await Category.find({})
+      .populate("user")
+      .sort({ createdAt: -1 });
+
+    res.json(categories);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+module.exports = { createCategoryCtrl, fetchCategoriesCtrl };
