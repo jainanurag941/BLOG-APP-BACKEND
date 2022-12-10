@@ -6,11 +6,13 @@ const {
   fetchCategoriesCtrl,
   fetchCategoryCtrl,
   updateCategoryCtrl,
+  deleteCategoryCtrl,
 } = require("../../controllers/category/categoryCtrl");
 
 categoryRoute.post("/", authMiddleware, createCategoryCtrl);
 categoryRoute.get("/", authMiddleware, fetchCategoriesCtrl);
 categoryRoute.get("/:id", authMiddleware, fetchCategoryCtrl);
 categoryRoute.put("/:id", authMiddleware, updateCategoryCtrl);
+categoryRoute.delete("/:id", authMiddleware, deleteCategoryCtrl);
 
 module.exports = categoryRoute;
