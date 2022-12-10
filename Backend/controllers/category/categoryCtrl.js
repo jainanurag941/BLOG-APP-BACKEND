@@ -29,4 +29,16 @@ const fetchCategoriesCtrl = expressAsyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { createCategoryCtrl, fetchCategoriesCtrl };
+//fetch a single category
+const fetchCategoryCtrl = expressAsyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const category = await Category.findById(id).populate("user");
+
+    res.json(category);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+module.exports = { createCategoryCtrl, fetchCategoriesCtrl, fetchCategoryCtrl };
