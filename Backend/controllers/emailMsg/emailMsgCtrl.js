@@ -1,9 +1,20 @@
 const expressAsyncHandler = require("express-async-handler");
 const nodemailer = require("nodemailer");
+const Filter = require("bad-words");
 const EmailMsg = require("../../model/EmailMessaging/EmailMessaging");
 
 const sendEmailMsgCtrl = expressAsyncHandler(async (req, res) => {
   const { to, subject, message } = req.body;
+
+  const emailMessage = subject + " " + message;
+
+  const filter = new Filter();
+  const isProfane = filter.isProfane(emailMessage);
+
+  if (isProfane) {
+    throw new Error("Email sent failed because it contains profane words");
+  }
+
   try {
     const transporter = nodemailer.createTransport({
       service: "hotmail",
