@@ -4,6 +4,7 @@ const dbConnect = require("./config/db/dbConnect");
 const usersRoute = require("./route/users/usersRoute");
 const postRoute = require("./route/posts/postRoute");
 const commentRoute = require("./route/comments/commentRoute");
+const emailMsgRoute = require("./route/emailMsg/emailMsgRoute");
 const { errorHandler, notFound } = require("./middlewares/error/errorHandler");
 dotenv.config();
 
@@ -22,6 +23,9 @@ app.use("/api/posts", postRoute);
 
 //Comment Route
 app.use("/api/comments", commentRoute);
+
+//Email Msg Route
+app.use("/api/email", emailMsgRoute);
 
 //err handler
 app.use(notFound);
