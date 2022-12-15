@@ -9,7 +9,7 @@ const cloudinaryUploadImg = require("../../utils/cloudinary");
 //Create Post
 const createPostCtrl = expressAsyncHandler(async (req, res) => {
   const { _id } = req.user;
-  validateMongodbId(req.body.user);
+  validateMongodbId(_id);
 
   const filter = new Filter();
   const isProfane = filter.isProfane(req.body.title, req.body.description);
@@ -35,6 +35,7 @@ const createPostCtrl = expressAsyncHandler(async (req, res) => {
       image: imgUploaded?.url,
       user: _id,
     });
+
     res.json(post);
 
     //Remove uploaded images
