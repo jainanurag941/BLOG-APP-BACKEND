@@ -45,12 +45,11 @@ const fetchCommentCtrl = expressAsyncHandler(async (req, res) => {
 const updateCommentCtrl = expressAsyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongodbId(id);
-  const { postId, description } = req?.body;
+  const { description } = req?.body;
   try {
     const update = await Comment.findByIdAndUpdate(
       id,
       {
-        post: postId,
         user: req.user,
         description,
       },
