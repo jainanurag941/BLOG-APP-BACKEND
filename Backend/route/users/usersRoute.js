@@ -51,6 +51,6 @@ userRoutes.put("/unblock-user/:id", authMiddleware, unBlockUserCtrl);
 userRoutes.get("/profile/:id", authMiddleware, userProfileCtrl);
 userRoutes.delete("/:id", deleteUsersCtrl);
 userRoutes.get("/:id", fetchUserDetailsCtrl);
-userRoutes.put("/:id", authMiddleware, updateUserCtrl);
+userRoutes.put("/", authMiddleware, updateUserCtrl);
 
 module.exports = userRoutes;
