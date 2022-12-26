@@ -92,9 +92,33 @@ const userProfileCtrl = expressAsyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongodbId(id);
 
+  const loginUserId = req?.user?._id?.toString();
+
   try {
-    const myProfile = await User.findById(id).populate("posts");
-    res.json(myProfile);
+    const myProfile = await User.findById(id)
+      .populate("posts")
+      .populate("viewedBy");
+
+    const alreadyViewed = myProfile?.viewedBy?.find((user) => {
+      return user?._id?.toString() === loginUserId;
+    });
+
+    if (alreadyViewed || id?.toString() === loginUserId) {
+      res.json(myProfile);
+    } else {
+      const profile = await User.findByIdAndUpdate(
+        myProfile?._id,
+        {
+          $push: { viewedBy: loginUserId },
+        },
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
+
+      res.json(profile);
+    }
   } catch (error) {
     res.json(error);
   }
