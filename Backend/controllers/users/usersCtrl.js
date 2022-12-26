@@ -39,6 +39,7 @@ const userLoginCtrl = expressAsyncHandler(async (req, res) => {
       profilePhoto: userFound?.profilePhoto,
       isAdmin: userFound?.isAdmin,
       token: generateToken(userFound?._id),
+      isVerified: userFound?.isAccountVerified,
     });
   } else {
     res.status(401);
