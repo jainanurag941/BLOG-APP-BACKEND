@@ -241,7 +241,7 @@ const generateVerificationTokenCtrl = expressAsyncHandler(async (req, res) => {
   const user = await User.findById(loginUserId);
   try {
     //Generate Token
-    const verificationToken = await user.createAccountVerificationToken();
+    const verificationToken = await user?.createAccountVerificationToken();
     await user.save();
 
     const resetURL = `If you were requested to verify your account, verify now within 10 miniutes, otherwise ignore this message <a href="http://localhost:3000/verify-account/${verificationToken}">Click to verify your account</a>`;
@@ -256,7 +256,7 @@ const generateVerificationTokenCtrl = expressAsyncHandler(async (req, res) => {
 
     const msg = {
       from: process.env.EMAIL,
-      to: "abc@gmail.com",
+      to: user?.email,
       subject: "Verification Mail",
       html: resetURL,
     };
