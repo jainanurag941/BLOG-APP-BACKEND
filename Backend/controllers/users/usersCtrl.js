@@ -6,6 +6,7 @@ const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const cloudinaryUploadImg = require("../../utils/cloudinary");
 const fs = require("fs");
+const blockUser = require("../../utils/blockUser");
 
 //Register User
 const userRegisterCtrl = expressAsyncHandler(async (req, res) => {
@@ -132,6 +133,8 @@ const userProfileCtrl = expressAsyncHandler(async (req, res) => {
 const updateUserCtrl = expressAsyncHandler(async (req, res) => {
   const { _id } = req?.user;
   validateMongodbId(_id);
+
+  blockUser(req?.user);
 
   const user = await User.findByIdAndUpdate(
     _id,
@@ -383,7 +386,9 @@ const passwordResetCtrl = expressAsyncHandler(async (req, res) => {
 
 //Profile photo upload
 const profilePhotoUploadCtrl = expressAsyncHandler(async (req, res) => {
-  const { _id } = req.user;
+  const { _id } = req?.user;
+
+  blockUser(req?.user);
 
   //1. Get the path to img
   const localPath = `public/images/profile/${req.file.filename}`;
