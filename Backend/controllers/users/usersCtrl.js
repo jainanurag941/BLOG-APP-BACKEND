@@ -117,7 +117,11 @@ const userProfileCtrl = expressAsyncHandler(async (req, res) => {
         }
       );
 
-      res.json(profile);
+      const popProfile = await User.findById(myProfile?._id)
+        .populate("posts")
+        .populate("viewedBy");
+
+      res.json(popProfile);
     }
   } catch (error) {
     res.json(error);
