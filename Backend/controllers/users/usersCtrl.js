@@ -50,7 +50,7 @@ const userLoginCtrl = expressAsyncHandler(async (req, res) => {
 //Fetch All Users
 const fetchUsersCtrl = expressAsyncHandler(async (req, res) => {
   try {
-    const users = await User.find({});
+    const users = await User.find({}).populate("posts");
     res.json(users);
   } catch (error) {
     res.json(error);
