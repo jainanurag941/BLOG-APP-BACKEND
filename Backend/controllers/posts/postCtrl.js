@@ -26,6 +26,13 @@ const createPostCtrl = expressAsyncHandler(async (req, res) => {
     );
   }
 
+  if (
+    req?.user?.accountType === "Starter Account" &&
+    req?.user?.postCount >= 2
+  ) {
+    throw new Error("Starter Account can only create two post");
+  }
+
   //1. Get the path to img
   const localPath = `public/images/posts/${req.file.filename}`;
 
@@ -39,10 +46,21 @@ const createPostCtrl = expressAsyncHandler(async (req, res) => {
       user: _id,
     });
 
-    res.json(post);
+    await User.findByIdAndUpdate(
+      _id,
+      {
+        $inc: { postCount: 1 },
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     //Remove uploaded images
     fs.unlinkSync(localPath);
+
+    res.json(post);
   } catch (error) {
     res.json(error);
   }
