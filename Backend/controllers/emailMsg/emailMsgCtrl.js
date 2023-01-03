@@ -15,6 +15,8 @@ const sendEmailMsgCtrl = expressAsyncHandler(async (req, res) => {
     throw new Error("Email sent failed because it contains profane words");
   }
 
+  const newMessage = `This mail was sent to you by ${req?.user?.firstName} ${req?.user?.lastName} from BLOG App. `;
+
   try {
     const transporter = nodemailer.createTransport({
       service: "hotmail",
@@ -28,7 +30,7 @@ const sendEmailMsgCtrl = expressAsyncHandler(async (req, res) => {
       from: process.env.EMAIL,
       to,
       subject,
-      text: message,
+      text: newMessage + message,
     };
 
     await transporter.sendMail(msg);
