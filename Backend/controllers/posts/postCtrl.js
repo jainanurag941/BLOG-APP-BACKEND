@@ -28,9 +28,9 @@ const createPostCtrl = expressAsyncHandler(async (req, res) => {
 
   if (
     req?.user?.accountType === "Starter Account" &&
-    req?.user?.postCount >= 2
+    req?.user?.postCount >= 4
   ) {
-    throw new Error("Starter Account can only create two post");
+    throw new Error("Starter Account can only create four post");
   }
 
   //1. Get the path to img
